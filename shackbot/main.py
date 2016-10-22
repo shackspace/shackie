@@ -15,7 +15,11 @@ def _bot_command(func, name):
         return func(*args, **kwargs)
     if not name:
         name = func.__name__
-    REGISTRY[name] = func
+
+    if isinstance(name, list):
+        REGISTRY.update({n: func for n in name})
+    else:
+        REGISTRY[name] = func
     return ret_fun
 
 
@@ -25,7 +29,7 @@ def bot_command(name):
     return wrap
 
 
-@bot_command('other_name_for_command')
+@bot_command(['other_name_for_command', 'beispiel'])
 def example(parsed, user, target, text):
     print('Called example function')
 
