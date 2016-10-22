@@ -1,13 +1,16 @@
-bot:
-  build: .
-  environment:
-      PYTHONUNBUFFERED: 0
-  volumes:
-    - .:/opt/code
-  links:
-    - redis
-redis:
-  image: redis:3
-  command: redis-server --appendonly yes
-  volumes:
-    - ./storage:/data
+version: '2'
+
+services:
+  bot:
+    build: .
+    environment:
+        PYTHONUNBUFFERED: 0
+    volumes:
+      - .:/opt/code
+    links:
+      - redis
+  redis:
+    image: redis:3
+    command: redis-server --appendonly yes
+    volumes:
+      - ./storage:/data
