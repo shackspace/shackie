@@ -1,0 +1,4 @@
+BOT_CHAR = '.'
+CHANNELS = ['#shackspace', ]
+NICKNAME = 'shackonista'
+SAY_NO = False

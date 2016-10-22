@@ -1,9 +1,12 @@
 import asyncio
 from asyncirc import irc
 
+import config
+
+
 bot = irc.connect("chat.freenode.net", 6667, use_ssl=False)\
-         .register("NICKNAME", "shackbot", "shackbot")\
-         .join("#shackspace-dev")
+         .register(config.NICKNAME, config.NICKNAME, ' (bot)'.format(config.NICKNAME))\
+         .join(config.CHANNELS)
 
 
 @bot.on("message")
