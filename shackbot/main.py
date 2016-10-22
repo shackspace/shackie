@@ -12,8 +12,12 @@ if __name__ == '__main__':
 
     @bot.on('message')
     def bot_message(parsed, user, target, text):
-        if text.startswith(config.BOT_CHAR):
-            command = text.split()[0]
+        message = text
+        if message.startswith(config.NICKNAME + ': '):
+            message = message[len(config.NICKNAME) + 1:]
+
+        if message.startswith(config.BOT_CHAR):
+            command = message.split()[0]
             if len(command) > 1:
                 command = command[1:]
                 if command in REGISTRY:
