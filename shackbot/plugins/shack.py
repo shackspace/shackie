@@ -1,12 +1,15 @@
 import requests
+from datetime import date, datetime
 
 from bot import Bot
-from main import bot_command
+from registry import bot_command
+
+
+bot = Bot()
 
 
 @bot_command('open')
 def open(parsed, user, target, text):
-    bot = Bot()
     try:
         response = requests.get('http://shackspace.de/sopen/text/en')
         response.raise_for_status()

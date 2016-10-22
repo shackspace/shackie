@@ -1,5 +1,5 @@
 from bot import Bot
-from main import bot_command
+from registry import bot_command
 from storage import store
 
 
