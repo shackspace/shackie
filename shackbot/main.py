@@ -10,6 +10,8 @@ from registry import REGISTRY
 if __name__ == '__main__':
     bot = Bot()
 
+    print("### bot started")
+
     @bot.on('message')
     def bot_message(parsed, user, target, text):
         message = text

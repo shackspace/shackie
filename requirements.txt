@@ -1,4 +1,5 @@
 asyncio-irc
 beautifulsoup4
-requests
+pytz
 redis
+requests
