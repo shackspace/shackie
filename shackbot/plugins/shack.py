@@ -54,3 +54,11 @@ def link_plenum(parsed, user, target, text):
         bot.say(target, requests.get('http://shackspace.de/nextplenum/http300/current').url)
     except:
         bot.say(target, 'Plenum ist ja eigentlich auch überbewertet.')
+
+
+@bot_command('online')
+def online(parsed, user, target, text):
+    try:
+        bot.say(target, requests.get('http://shackproxy.unimatrix21.org/shackles/online').content.decode())
+    except:
+        bot.say(target, 'rashfael: Das tut schon wieder nicht.')

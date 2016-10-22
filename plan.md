@@ -1,9 +1,9 @@
 # Plan
 
-- [ ] next plenum
-- [ ] plenum link
+- [x] next plenum
+- [x] plenum link
 - [ ] reminder (!alarm (time or minutes))
 - [x] open/close of shack
-- [ ] online (in shack)
+- [x] online (in shack)
 - [ ] karma
 - [x] link title
