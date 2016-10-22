@@ -5,6 +5,7 @@ import config
 
 class Bot:
     bot = None
+
     def __new__(cls, *args, **kwargs):
         if not cls.bot:
             cls.bot = irc.connect("chat.freenode.net", 6667, use_ssl=False)\

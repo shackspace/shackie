@@ -1,12 +1,11 @@
-import asyncio
 import glob
 import importlib
 
+import asyncio
+
 import config
 from bot import Bot
-from storage import store
-from registry import bot_command, REGISTRY
-
+from registry import REGISTRY
 
 if __name__ == '__main__':
     bot = Bot()

@@ -2,9 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 
 from bot import Bot
-from main import bot_command
 
 bot = Bot()
+
 
 @bot.on('message')
 def title(parsed, user, target, text):
