@@ -4,6 +4,7 @@ import importlib
 
 import config
 from bot import Bot
+from storage import store
 from registry import bot_command, REGISTRY
 
 
