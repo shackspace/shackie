@@ -4,13 +4,20 @@ REGISTRY = dict()
 def _bot_command(func, name):
     def ret_fun(*args, **kwargs):
         return func(*args, **kwargs)
+
+    def update_registry(key, value):
+        if key in REGISTRY:
+            raise Exception('Command {} is already defined.'.format(key))
+        REGISTRY[key] = value
+
     if not name:
         name = func.__name__
 
     if isinstance(name, list):
-        REGISTRY.update({n: func for n in name})
+        for n in name:
+            update_registry(n, func)
     else:
-        REGISTRY[name] = func
+        update_registry(name, func)
     return ret_fun
 
 
