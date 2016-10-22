@@ -10,6 +10,26 @@ bot = irc.connect("chat.freenode.net", 6667, use_ssl=False)\
          .join(config.CHANNELS)
 
 
+def _bot_command(func, name):
+    def ret_fun(*args, **kwargs):
+        return func(*args, **kwargs)
+    if not name:
+        name = func.__name__
+    REGISTRY[name] = func
+    return ret_fun
+
+
+def bot_command(name):
+    def wrap(f):
+        return _bot_command(f, name)
+    return wrap
+
+
+@bot_command('other_name_for_command')
+def example(parsed, user, target, text):
+    print('Called example function')
+
+
 @bot.on("message")
 def incoming_message(parsed, user, target, text):
     if text.startswith('.status'):
