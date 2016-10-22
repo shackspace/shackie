@@ -16,7 +16,7 @@ if __name__ == '__main__':
     def bot_message(parsed, user, target, text):
         message = text
         if message.startswith(config.NICKNAME + ': '):
-            message = message[len(config.NICKNAME) + 1:]
+            message = message[len(config.NICKNAME) + 2:]
 
         if message.startswith(config.BOT_CHAR):
             command = message.split()[0]

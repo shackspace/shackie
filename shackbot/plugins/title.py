@@ -13,7 +13,7 @@ def title(parsed, user, target, text):
     if 'http://' in text or 'https://' in text:
         try:
             url = text[text.find('http'):].split()[0]
-            domain = "{0.scheme}://{0.netloc}/".format(urlsplit(url))
+            domain = "{0.netloc}".format(urlsplit(url))
 
             response = requests.get(url, allow_redirects=True, timeout=2)
             response.raise_for_status()
