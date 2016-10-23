@@ -59,7 +59,18 @@ def title(parsed, user, target, text):
 
 
 def get_karma(target, karma):
-    return int(store.get('{}§{}'.format(target, karma)) or 0)
+    return int(store.get('karma.{}§{}'.format(target, karma)) or 0)
+
+
+def update_scores(target, karma, value):
+    top = json.loads(store.get('karma.top.{}'.format(target)).decode()) or dict()
+    bottom = json.loads(store.get('karma.bottom.{}'.format(target)).decode()) or dict()
+    top.update({karma: value})
+    bottom.update({karma: value})
+    top = dict(sorted(top.items(), key=operator.itemgetter(1), reverse=True)[:3])
+    bottom = dict(sorted(bottom.items(), key=operator.itemgetter(1), reverse=False)[:3])
+    store.set('karma.top.{}'.format(target), json.dumps(top))
+    store.set('karma.bottom.{}'.format(target), json.dumps(bottom))
 
 
 def increment_karma(target, karma):
