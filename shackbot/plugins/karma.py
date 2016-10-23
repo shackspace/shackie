@@ -65,16 +65,18 @@ def get_karma(target, karma):
 def increment_karma(target, karma):
     current = get_karma(target, karma)
     if not current:
-        store.set('{}§{}'.format(target, karma), 1)
+        store.set('karma.{}§{}'.format(target, karma), 1)
     else:
-        store.incr('{}§{}'.format(target, karma), 1)
+        store.incr('karma.{}§{}'.format(target, karma), 1)
+    update_scores(target, karma, current + 1)
     return current + 1
 
 
 def decrement_karma(target, karma):
     current = get_karma(target, karma)
     if not current:
-        store.set('{}§{}'.format(target, karma), -1)
+        store.set('karma.{}§{}'.format(target, karma), -1)
     else:
-        store.decr('{}§{}'.format(target, karma), 1)
+        store.decr('karma.{}§{}'.format(target, karma), 1)
+    update_scores(target, karma, current - 1)
     return current - 1
