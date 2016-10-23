@@ -14,16 +14,21 @@ def show_karma(parsed, user, target, text):
     text = text[len('.karma'):].strip()
 
     if not text:
-        top = json.loads(store.get('karma.top.{}'.format(target)).decode()) or dict()
-        bottom = json.loads(store.get('karma.bottom.{}'.format(target)).decode()) or dict()
-        user_karma = get_karma(target, user.nick)
+        try:
+            top = json.loads(store.get('karma.top.{}'.format(target)).decode()) or dict()
+            bottom = json.loads(store.get('karma.bottom.{}'.format(target)).decode()) or dict()
+        except AttributeError:
+            store.set('karma.top.{}'.format(target), dict())
+            store.set('karma.bottom.{}'.format(target), dict())
+        else:
+            user_karma = get_karma(target, user.nick)
 
-        response = 'Top karma: {}. Flop karma: {}. Karma for {}: {}'.format(
-            ', '.join('{}: {}'.format(key, value) for key, value in top.items()),
-            ', '.join('{}: {}'.format(key, value) for key, value in bottom.items()),
-            user.nick, user_karma,
-        )
-        bot.say(target, response)
+            response = 'Top karma: {}. Flop karma: {}. Karma for {}: {}'.format(
+                ', '.join('{}: {}'.format(key, value) for key, value in top.items()),
+                ', '.join('{}: {}'.format(key, value) for key, value in bottom.items()),
+                user.nick, user_karma,
+            )
+            bot.say(target, response)
 
     else:
         to_print = []
@@ -75,8 +80,13 @@ def get_karma(target, karma):
 
 
 def update_scores(target, karma, value):
-    top = json.loads(store.get('karma.top.{}'.format(target)).decode()) or dict()
-    bottom = json.loads(store.get('karma.bottom.{}'.format(target)).decode()) or dict()
+    try:
+        top = json.loads(store.get('karma.top.{}'.format(target)).decode()) or dict()
+        bottom = json.loads(store.get('karma.bottom.{}'.format(target)).decode()) or dict()
+    except:
+        top = dict()
+        bottom = dict()
+
     top.update({karma: value})
     bottom.update({karma: value})
     top = dict(sorted(top.items(), key=operator.itemgetter(1), reverse=True)[:3])
