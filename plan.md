@@ -2,8 +2,15 @@
 
 - [x] next plenum
 - [x] plenum link
-- [ ] reminder (!alarm (time or minutes))
+- [x] reminder (!alarm (time or minutes))
 - [x] open/close of shack
 - [x] online (in shack)
-- [ ] karma
+- [x] karma
 - [x] link title
+
+# Minor bugs
+
+- answer to private message
+- provide ordered karma output
+- write tests
+- reconnect after connection loss
