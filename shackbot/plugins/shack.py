@@ -1,8 +1,10 @@
+import asyncio
 import requests
 from datetime import date, datetime
 
 from bot import Bot
 from registry import bot_command
+from storage import store
 
 
 bot = Bot()
@@ -62,3 +64,21 @@ def online(parsed, user, target, text):
         bot.say(target, requests.get('http://shackproxy.unimatrix21.org/shackles/online').content.decode())
     except:
         bot.say(target, 'rashfael: Das tut schon wieder nicht.')
+
+
+def check_site():
+    try:
+        response = requests.get('http://shackspace.de/sopen/text/en')
+        response.raise_for_status()
+        new = response.content.decode().strip()
+        old = store.get('shack.state').decode() or ''
+        store.set('shack.state', new)
+
+        if old and (old != new):
+            bot.say('#shackspace-dev', 'shack switched from {} to {}.'.format(old, new))
+    except:
+        pass
+
+    asyncio.get_event_loop().call_later(60, check_site)
+
+asyncio.get_event_loop().call_later(60, check_site)
