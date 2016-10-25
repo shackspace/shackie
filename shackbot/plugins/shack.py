@@ -72,10 +72,13 @@ def check_site():
         response.raise_for_status()
         new = response.content.decode().strip()
         old = store.get('shack.state').decode() or ''
-        store.set('shack.state', new)
 
-        if old and (old != new):
-            bot.say('#shackspace-dev', 'shack switched from {} to {}.'.format(old, new))
+        if not 'no data' in new:
+            store.set('shack.state', new)
+            if 'open' in new and 'closed' in old:
+                bot.say('#shackspace-dev', 'The shack has been opened.')
+            elif 'open' in old and 'closed' in new:
+                bot.say('#shackspace-dev', 'The shack has been closed.')
     except:
         pass
 
