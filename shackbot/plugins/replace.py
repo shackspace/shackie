@@ -3,6 +3,8 @@ via http://cgit.cd.krebsco.de/stockholm/tree/krebs/5pkgs/Reaktor/scripts/sed-plu
 """
 import re
 from subprocess import Popen, PIPE
+from shutil import which
+from os.path import realpath
 
 from bot import Bot
 from storage import store
@@ -27,10 +29,17 @@ def replace_entrypoint(parsed, user, target, text):
             destination = destination.replace('\/','/')
             flagstr = flagstr or ''
 
-            proc = Popen(
-                ['sed', 's/{}/{}/{}'.format(source, destination, flagstr)],
-                stdin=PIPE, stdout=PIPE
-            )
+            # do not trust sed as it is able to read and write arbitrary files
+            p = Popen(['proot',
+                            '-b','/usr',
+                            '-b','/bin',
+                            # TODO: additional folders may be required
+                            '-r','/var/empty',
+                            '-w','/',
+                            realpath(which('sed')),
+                            's/{}/{}/{}'.format(source,destination,flagstr)
+                        ], stdin=PIPE, stdout=PIPE )
+
             out, error = proc.communicate(bytes("{}\n".format(last_line), "UTF-8"))
             if proc.returncode:
                 bot.say(target, "Something went wrong when trying to process your regex: {}".format(error.decode()))
