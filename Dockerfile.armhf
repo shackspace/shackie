@@ -1,0 +1,32 @@
+FROM armv7/armhf-ubuntu
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update && apt-get install -y \
+    locales python3-dev python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set the locale
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
+RUN useradd uid1000 -d /home/uid1000
+RUN mkdir -p /home/uid1000 && chown uid1000: /home/uid1000
+VOLUME /home/uid1000
+
+USER root
+
+COPY requirements.txt /opt/code/requirements.txt
+WORKDIR /opt/code
+RUN pip3 install -Ur requirements.txt
+COPY . /opt/code
+
+RUN chown -R uid1000: /opt
+
+WORKDIR /opt/code/shackbot
+
+USER uid1000
+
+CMD ["python3", "main.py"]
