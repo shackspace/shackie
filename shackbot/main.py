@@ -27,9 +27,13 @@ if __name__ == '__main__':
                 elif config.SAY_NO:
                     bot.say(target, 'I don\'t know what {} means.'.format(command))
 
-    module = glob.glob('plugins/*.py')
-    module.sort()
-    for m in module:
-        importlib.import_module(m[:-3].replace('/', '.'))
+    if config.PLUGINS == '__all__':
+        module = glob.glob('plugins/*.py')
+        module.sort()
+        for m in module:
+            importlib.import_module(m[:-3].replace('/', '.'))
+    else:
+        for plugin in config.PLUGINS:
+            importlib.import_module('plugins.{}'.format(plugin))
 
     asyncio.get_event_loop().run_forever()
