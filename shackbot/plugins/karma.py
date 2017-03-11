@@ -11,7 +11,7 @@ bot = Bot()
 
 @bot_command('karma')
 def show_karma(parsed, user, target, text):
-    text = text[len('.karma'):].strip()
+    text = text[len('.karma'):].strip().lower()
 
     if not text:
         try:
@@ -51,7 +51,7 @@ def show_karma(parsed, user, target, text):
             else:
                 to_print.append(word)
 
-        response = ', '.join('{}: {}'.format(word, get_karma(target, word)) for word in to_print)
+        response = ', '.join('{}: {}'.format(word, get_karma(target, word.lower())) for word in to_print)
         bot.say(target, response)
 
 
@@ -60,13 +60,13 @@ def title(parsed, user, target, text):
     text = text.strip()
     if text.endswith('++') or text.endswith('--'):
         karma = text[:-2]
-        karma = karma.strip()
+        karma = karma.strip().lower()
         if karma[0] in '"\'' and karma[0] == karma[-1]:
             karma = karma[1:-1]
         elif karma[0] == '(' and karma[-1] == ')':
             karma = karma[1:-1]
 
-        if karma == user.nick:
+        if karma == user.nick.lower():
             pass
 
         if text[-1] == '+':
@@ -76,7 +76,7 @@ def title(parsed, user, target, text):
 
 
 def get_karma(target, karma):
-    return int(store.get('karma.{}§{}'.format(target, karma)) or 0)
+    return int(store.get('karma.{}§{}'.format(target, karma.lower())) or 0)
 
 
 def update_scores(target, karma, value):
@@ -96,6 +96,7 @@ def update_scores(target, karma, value):
 
 
 def increment_karma(target, karma):
+    target = target.lower()
     current = get_karma(target, karma)
     if not current:
         store.set('karma.{}§{}'.format(target, karma), 1)
@@ -106,6 +107,7 @@ def increment_karma(target, karma):
 
 
 def decrement_karma(target, karma):
+    target = target.lower()
     current = get_karma(target, karma)
     if not current:
         store.set('karma.{}§{}'.format(target, karma), -1)
