@@ -1,3 +1,5 @@
 import redis
 
-store = redis.StrictRedis(host='redis', port=6379, db=0)
+from config import REDIS
+
+store = redis.StrictRedis(host=REDIS['HOST'], port=REDIS['PORT'], db=REDIS['DB'])
