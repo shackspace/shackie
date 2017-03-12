@@ -4,7 +4,7 @@ MAINTAINER X
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get install -y \
-    locales \
+    locales proot \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd uid1000 -d /home/uid1000
