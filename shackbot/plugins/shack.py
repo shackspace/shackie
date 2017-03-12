@@ -1,6 +1,8 @@
 import asyncio
-import requests
 from datetime import date, datetime
+
+import bs4
+import requests
 
 from bot import Bot
 from registry import bot_command
@@ -84,4 +86,22 @@ def check_site():
 
     asyncio.get_event_loop().call_later(60, check_site)
 
+
+def check_blog():
+    response = requests.get('http://shackspace.de/?feed=rss2')
+    soup = bs4.BeautifulSoup(response.text, 'lxml-xml')
+    latest_post = soup.rss.find('item')
+    last_post = store.get('shack.blogpost').decode() or ''
+
+    if last_post != latest_post.link:
+        bot.say('#shackspace-dev', 'New blog post! »{title}« by {author}: {url}'.format(
+            title=latest_post.title,
+            author=latest_post.find('creator').text,
+            url=latest_post.link,
+        ))
+        store.set('shack.blogpost', latest_post.link)
+    asyncio.get_event_loop().call_later(60, check_blog)
+
+
 asyncio.get_event_loop().call_later(60, check_site)
+asyncio.get_event_loop().call_later(60, check_blog)
