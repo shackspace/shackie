@@ -27,7 +27,7 @@ def _handle_title(url, bot, target):
 
 
 def _handle_repeat(url, bot, target):
-    bare_url = '{0.netloc}{0.path}'.format(urlsplit(url))
+    bare_url = '{0.netloc}{0.path}?{0.query}'.format(urlsplit(url))
     redis_string = 'urls.{}§{}'.format(target, bare_url)
     count = int(store.get(redis_string) or 0)
 
