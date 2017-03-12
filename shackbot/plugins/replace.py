@@ -12,23 +12,17 @@ bot = Bot()
 
 
 def is_replace(line):
-    myre = re.compile(r'^s/((?:\\/|[^/])+)/((?:\\/|[^/])*)/([ig]*)$')
+    myre = re.compile(r'^s/(?:\\/|[^/])+/(?:\\/|[^/])*/[ig]?$')
     return myre.match(line)
 
 
 @bot.on('message')
 def replace_entrypoint(parsed, user, target, text):
-    regex = is_replace(text)
-    if regex:
+    if is_replace(text):
         last_line = store.get('replace.{}.{}'.format(target, user.nick)).decode()
         if last_line:
-            source, destination, flagstr = regex.groups()
-            source = source.replace('\/','/')
-            destination = destination.replace('\/','/')
-            flagstr = flagstr or ''
-
             proc = Popen(
-                ['sed', 's/{}/{}/{}'.format(source, destination, flagstr)],
+                ['sed', text],
                 stdin=PIPE, stdout=PIPE
             )
             out, error = proc.communicate(bytes("{}\n".format(last_line), "UTF-8"))
