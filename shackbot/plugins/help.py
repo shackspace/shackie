@@ -7,5 +7,5 @@ def help(parsed, user, target, text):
     bot = Bot()
 
     bot.say(target, 'Hi, I\'m shackie. I\'ll react to the following commands: {}'.format(
-        ', '.join(REGISTRY.keys())
+        ', '.join(sorted(REGISTRY.keys()))
     ))
