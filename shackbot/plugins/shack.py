@@ -79,9 +79,9 @@ def check_site():
         if not 'no data' in new:
             store.set('shack.state', new)
             if 'open' in new and 'closed' in old:
-                bot.say('#shackspace-dev', 'The shack has been opened.')
+                bot.say('#shackspace', 'The shack has been opened.')
             elif 'open' in old and 'closed' in new:
-                bot.say('#shackspace-dev', 'The shack has been closed.')
+                bot.say('#shackspace', 'The shack has been closed.')
     except:
         pass
 
@@ -98,7 +98,7 @@ def check_blog():
     store.set(blog_key, latest_post.link.text)
 
     if last_post != latest_post.link.text:
-        bot.say('#shackspace-dev', 'New blog post! »{title}« by {author}: {url}'.format(
+        bot.say('#shackspace', 'New blog post! »{title}« by {author}: {url}'.format(
             title=latest_post.title.text,
             author=latest_post.find('creator').text,
             url=latest_post.link.text,
