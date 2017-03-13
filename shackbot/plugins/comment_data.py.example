@@ -1,0 +1,18 @@
+import re
+
+
+ANSWERS = [
+    {
+        'regex': re.compile('^NEIN!$'),
+        'answers': ['DOCH!', '/me gähnt angesichts des ausgelutschten Shibboleets.'],
+        'probability': 1,
+    },
+    {
+        'regex': re.compile('^...|…$'),
+        'answers': ['/me langweilt sich auch.'],
+        'probability': 1,
+    }
+]
+
+
+PERSONAL_ANSWERS = []
