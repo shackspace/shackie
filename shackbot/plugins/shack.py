@@ -73,7 +73,8 @@ def check_site():
         response = requests.get('http://shackspace.de/sopen/text/en')
         response.raise_for_status()
         new = response.content.decode().strip()
-        old = store.get('shack.state').decode() or ''
+        old = store.get('shack.state')
+        old = old.decode() if old else ''
 
         if not 'no data' in new:
             store.set('shack.state', new)
@@ -91,7 +92,8 @@ def check_blog():
     response = requests.get('http://shackspace.de/?feed=rss2')
     soup = bs4.BeautifulSoup(response.text, 'lxml-xml')
     latest_post = soup.rss.find('item')
-    last_post = store.get('shack.blogpost').decode() or ''
+    last_post = store.get('shack.blogpost')
+    last_post = last_post.decode() if last_post else ''
 
     if last_post != latest_post.link:
         bot.say('#shackspace-dev', 'New blog post! »{title}« by {author}: {url}'.format(
