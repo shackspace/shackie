@@ -15,7 +15,7 @@ if __name__ == '__main__':
     @bot.on('message')
     def bot_message(parsed, user, target, text):
         message = text
-        if message.startswith(config.NICKNAME + ': '):
+        if message.startswith(config.NICKNAME + ': ') or message.startswith(config.NICKNAME + ', '):
             message = message[len(config.NICKNAME) + 2:]
 
         if message.startswith(config.BOT_CHAR):
