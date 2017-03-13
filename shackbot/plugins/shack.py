@@ -89,19 +89,20 @@ def check_site():
 
 
 def check_blog():
+    blog_key = 'shack.blogpost'
     response = requests.get('http://shackspace.de/?feed=rss2')
     soup = bs4.BeautifulSoup(response.text, 'lxml-xml')
     latest_post = soup.rss.find('item')
-    last_post = store.get('shack.blogpost')
+    last_post = store.get(blog_key)
     last_post = last_post.decode() if last_post else ''
+    store.set(blog_key, latest_post.link.text)
 
-    if last_post != latest_post.link:
+    if last_post != latest_post.link.text:
         bot.say('#shackspace-dev', 'New blog post! »{title}« by {author}: {url}'.format(
-            title=latest_post.title,
+            title=latest_post.title.text,
             author=latest_post.find('creator').text,
-            url=latest_post.link,
+            url=latest_post.link.text,
         ))
-        store.set('shack.blogpost', latest_post.link)
     asyncio.get_event_loop().call_later(60, check_blog)
 
 
