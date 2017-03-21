@@ -5,7 +5,9 @@ import asyncio
 
 import config
 from bot import Bot
+from core.parsing import get_command_if_bot_message
 from registry import REGISTRY
+
 
 if __name__ == '__main__':
     bot = Bot()
@@ -14,18 +16,12 @@ if __name__ == '__main__':
 
     @bot.on('message')
     def bot_message(parsed, user, target, text):
-        message = text
-        if message.startswith(config.NICKNAME + ': ') or message.startswith(config.NICKNAME + ', '):
-            message = message[len(config.NICKNAME) + 2:]
-
-        if message.startswith(config.BOT_CHAR):
-            command = message.split()[0]
-            if len(command) > 1:
-                command = command[1:]
-                if command in REGISTRY:
-                    REGISTRY[command](parsed, user, target, text)
-                elif config.SAY_NO:
-                    bot.say(target, 'I don\'t know what {} means.'.format(command))
+        command = get_command_if_bot_message(text, config.NICKNAME, config.BOT_CHAR)
+        if command:
+            if command in REGISTRY:
+                REGISTRY[command](parsed, user, target, text)
+            elif config.SAY_NO:
+                bot.say(target, 'I don\'t know what {} means.'.format(command))
 
     if config.PLUGINS == '__all__':
         module = glob.glob('plugins/*.py')
