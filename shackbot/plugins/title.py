@@ -18,10 +18,12 @@ def _handle_title(url, bot, target):
         response.raise_for_status()
 
         soup = BeautifulSoup(response.content, 'html.parser')
-        title = soup.title.string
-        title = title[:400] + '…' if len(title) > 400 else title
+        title = soup.title.string.strip()
 
-        bot.say(target, 'Title: {title} (at {domain})'.format(title=title, domain=domain))
+        if title:
+            title = title.split('\n')[0]
+            title = title[:400] + '…' if len(title) > 400 else title
+            bot.say(target, 'Title: {title} (at {domain})'.format(title=title, domain=domain))
     except:
         pass
 
