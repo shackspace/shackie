@@ -19,7 +19,10 @@ if __name__ == '__main__':
         command = get_command_if_bot_message(text, config.NICKNAME, config.BOT_CHAR)
         if command:
             if command in REGISTRY:
-                REGISTRY[command](parsed, user, target, text)
+                try:
+                    REGISTRY[command](parsed, user, target, text)
+                except Exception as e:
+                    print('Calling "{command} failed. Exception: {e}"'.format(command=command, e=str(e)))
             elif config.SAY_NO:
                 bot.say(target, 'I don\'t know what {} means.'.format(command))
 
