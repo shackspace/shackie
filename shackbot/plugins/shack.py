@@ -15,7 +15,8 @@ bot = Bot()
 
 def _is_open():
     try:
-        response = requests.get('https://api.shack.space/v1/space')
+        # response = requests.get('https://api.shack.space/v1/space')
+        response = requests.get('http://localhost/v1/space')
         return json.loads(response.content)['doorState']['open']
     except:
         return None
