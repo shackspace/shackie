@@ -1,5 +1,6 @@
 import asyncio
 from datetime import date, datetime
+import json
 
 import bs4
 import requests
@@ -12,23 +13,23 @@ from storage import store
 bot = Bot()
 
 
+def _is_open():
+    try:
+        response = requests.get('https://api.shack.space/v1/space')
+        return json.loads(response.content)['doorState']['open']
+    except:
+        return None
+
+
 @bot_command('open')
 def open(parsed, user, target, text):
-    try:
-        response = requests.get('http://shackspace.de/sopen/text/en')
-        response.raise_for_status()
-        reply = response.content.decode()
-    except:
-        bot.say(target, 'Error ({}) while trying to reach the shack :('.format(
-            response.status_code if response else 'ouch!')
-        )
+    state = _is_open()
+    if state is True:
+        bot.say(target, 'shack is open')
+    elif state is False:
+        bot.say(target, 'shack is closed')
     else:
-        if 'open' in reply:
-            bot.say(target, 'shack is open')
-        elif 'close' in reply:
-            bot.say(target, 'shack is closed')
-        else:
-            bot.say(target, 'Defuq? I have no idea.')
+        bot.say(target, 'Defuq? I have no idea.')
 
 
 @bot_command('plenum')
@@ -70,13 +71,18 @@ def online(parsed, user, target, text):
 
 def check_site():
     try:
-        response = requests.get('http://shackspace.de/sopen/text/en')
-        response.raise_for_status()
-        new = response.content.decode().strip()
+        status = _is_open()
+        if status is True:
+            new = 'open'
+        elif status is False:
+            new = 'closed'
+        else:
+            new = 'no data'
+
         old = store.get('shack.state')
         old = old.decode() if old else ''
 
-        if not 'no data' in new:
+        if status is not None:
             store.set('shack.state', new)
             if 'open' in new and 'closed' in old:
                 bot.say('#shackspace', 'The shack has been opened.')
