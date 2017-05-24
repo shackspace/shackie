@@ -35,7 +35,7 @@ def _handle_repeat(url, bot, target):
 
     if count:
         if count == 1:
-            message = 'This url has been posted alread, lame!'
+            message = 'This url has been posted already, lame!'
         elif count == 2:
             message = 'This url has been posted twice before, must be important.'
         else:
