@@ -1,5 +1,6 @@
 import asyncio
 from datetime import date, datetime
+from dateutil import parser
 import json
 
 import bs4
@@ -39,7 +40,7 @@ def next_plenum(parsed, user, target, text):
         response = requests.get('http://localhost/v1/plena/next')
         response.raise_for_status()
         # TODO HOW INTO ISODATE PARSING?
-        next_date = datetime.strptime(response.content.decode().strip(), '%Y-%m-%d')
+        next_date = parser.parse(json.loads(response.content.decode())['date'])
         delta = (next_date.date() - date.today()).days
 
         if delta == 0:
@@ -67,7 +68,7 @@ def link_plenum(parsed, user, target, text):
 @bot_command('online')
 def online(parsed, user, target, text):
     try:
-        response = requests.get('http://localhost/v1/open')
+        response = requests.get('http://localhost/v1/online')
         bot.say(target, json.loads(response.content.decode())['message'])
     except:
         bot.say(target, 'rashfael: Das tut schon wieder nicht.')
