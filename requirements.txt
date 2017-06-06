@@ -1,5 +1,6 @@
 asyncio-irc
 beautifulsoup4
+dateutil
 lxml
 pytz
 redis
