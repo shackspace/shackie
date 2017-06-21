@@ -17,7 +17,7 @@ bot = Bot()
 def _is_open():
     try:
         # response = requests.get('https://api.shack.space/v1/space')
-        response = requests.get('http://localhost/v1/space')
+        response = requests.get('http://localhost/v1/space', timeout=5)
         return json.loads(response.content.decode())['doorState']['open']
     except:
         return None
@@ -37,9 +37,8 @@ def open(parsed, user, target, text):
 @bot_command('plenum')
 def next_plenum(parsed, user, target, text):
     try:
-        response = requests.get('http://localhost/v1/plena/next')
+        response = requests.get('http://localhost/v1/plena/next', timeout=5)
         response.raise_for_status()
-        # TODO HOW INTO ISODATE PARSING?
         next_date = parser.parse(json.loads(response.content.decode())['date'])
         delta = (next_date.date() - date.today()).days
 
@@ -59,7 +58,7 @@ def next_plenum(parsed, user, target, text):
 @bot_command(['plenumlink', 'plenumslink'])
 def link_plenum(parsed, user, target, text):
     try:
-        response = requests.get('http://localhost/v1/plena/next')
+        response = requests.get('http://localhost/v1/plena/next', timeout=5)
         bot.say(target, json.loads(response.content.decode())['url'])
     except:
         bot.say(target, 'Plenum ist ja eigentlich auch überbewertet.')
@@ -68,7 +67,7 @@ def link_plenum(parsed, user, target, text):
 @bot_command('online')
 def online(parsed, user, target, text):
     try:
-        response = requests.get('http://localhost/v1/online')
+        response = requests.get('http://localhost/v1/online', timeout=10)
         bot.say(target, json.loads(response.content.decode())['message'])
     except:
         bot.say(target, 'rashfael: Das tut schon wieder nicht.')
@@ -101,7 +100,7 @@ def check_site():
 
 def check_blog():
     blog_key = 'shack.blogpost'
-    response = requests.get('https://blog.shackspace.de/?feed=rss2')
+    response = requests.get('https://blog.shackspace.de/?feed=rss2', timeout=5)
     soup = bs4.BeautifulSoup(response.text, 'lxml-xml')
     latest_post = soup.rss.find('item')
     last_post = store.get(blog_key)
