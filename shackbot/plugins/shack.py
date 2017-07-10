@@ -101,7 +101,7 @@ def check_site():
 
 def check_blog():
     blog_key = 'shack.blogpost'
-    response = requests.get('https://blog.shackspace.de/?feed=rss2', timeout=15)
+    response = requests.get('http://blog.shackspace.de/?feed=rss2', timeout=15)
     soup = bs4.BeautifulSoup(response.text, 'lxml-xml')
     latest_post = soup.rss.find('item')
     last_post = store.get(blog_key)
@@ -119,7 +119,7 @@ def check_blog():
 
 def check_wiki():
     wiki_key = 'shack.wikichange'
-    feed = feedparser.parse('https://wiki.shackspace.de/feed.php')
+    feed = feedparser.parse('http://wiki.shackspace.de/feed.php')
     latest_change = feed.entries[0]
 
     last_change = store.get(wiki_key)
