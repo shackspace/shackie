@@ -1,5 +1,6 @@
 asyncio-irc
 beautifulsoup4
+feedparser
 lxml
 python-dateutil
 pytz

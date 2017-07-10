@@ -4,6 +4,7 @@ from dateutil import parser
 import json
 
 import bs4
+import feedparser
 import requests
 
 from bot import Bot
@@ -116,5 +117,22 @@ def check_blog():
     asyncio.get_event_loop().call_later(60, check_blog)
 
 
+def check_wiki():
+    wiki_key = 'shack.wikichange'
+    feed = feedparser.parse('https://wiki.shackspace.de/feed.php')
+    latest_change = feed.entries[0]
+
+    last_change = store.get(wiki_key)
+    last_change = last_change.decode() if last_change else ''
+    store.set(wiki_key, latest_change['id'])
+
+    if last_change != latest_post['id']:
+        response = 'Page changed: ' + entry['title']
+        response += ' by ' + entry['authors'][0]['name'] if entry.get('authors') else ''
+        bot.say('#shackspace', response)
+    asyncio.get_event_loop().call_later(60, check_wiki)
+
+
 asyncio.get_event_loop().call_later(60, check_site)
 asyncio.get_event_loop().call_later(60, check_blog)
+asyncio.get_event_loop().call_later(60, check_wiki)
