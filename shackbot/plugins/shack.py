@@ -129,6 +129,7 @@ def check_wiki():
     if last_change != latest_change['id']:
         response = 'Page changed: ' + latest_change['title']
         response += ' by ' + latest_change['authors'][0]['name'] if latest_change.get('authors') else ''
+        response += ' – ' + latest_change['links'][0]['href']
         bot.say('#shackspace', response)
     asyncio.get_event_loop().call_later(60, check_wiki)
 
