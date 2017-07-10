@@ -101,7 +101,7 @@ def check_site():
 
 def check_blog():
     blog_key = 'shack.blogpost'
-    response = requests.get('https://blog.shackspace.de/?feed=rss2', timeout=5)
+    response = requests.get('https://blog.shackspace.de/?feed=rss2', timeout=15)
     soup = bs4.BeautifulSoup(response.text, 'lxml-xml')
     latest_post = soup.rss.find('item')
     last_post = store.get(blog_key)
