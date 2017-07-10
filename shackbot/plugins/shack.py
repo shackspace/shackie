@@ -126,9 +126,9 @@ def check_wiki():
     last_change = last_change.decode() if last_change else ''
     store.set(wiki_key, latest_change['id'])
 
-    if last_change != latest_post['id']:
-        response = 'Page changed: ' + entry['title']
-        response += ' by ' + entry['authors'][0]['name'] if entry.get('authors') else ''
+    if last_change != latest_change['id']:
+        response = 'Page changed: ' + latest_change['title']
+        response += ' by ' + latest_change['authors'][0]['name'] if latest_change.get('authors') else ''
         bot.say('#shackspace', response)
     asyncio.get_event_loop().call_later(60, check_wiki)
 
