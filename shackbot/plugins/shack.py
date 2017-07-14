@@ -2,6 +2,7 @@ import asyncio
 from datetime import date, datetime
 from dateutil import parser
 import json
+import random
 
 import bs4
 import feedparser
@@ -26,13 +27,39 @@ def _is_open():
 
 @bot_command('open')
 def open(parsed, user, target, text):
+    defuq_choices = [
+        'Defuq? I have no idea.',
+        'Can\'t reach the space, it probably burned down ...',
+        'I could tell you, but then I\'d have to kill you.',
+        'You know, a hackerspace is supposed to be made up of technologically capable people. So why is your infrastructure down again?',
+    ]
+    open_choices = [
+        'shack is open.',
+        'Your favourite hackerspace is open.',
+        'It\'s open.',
+        'Happy hacking, the shackspace is open.',
+        'open.',
+        'offen.',
+        'åpen',
+        'öppen',
+    ]
+    closed_choices = [
+        'shack is closed.',
+        'Your favourite hackerspace is closed.',
+        'It\'s closed.',
+        'Can\'t hack at shackspace, the shackspace is closed.',
+        'shackspace is closed, hack the system instead.',
+        'closed.',
+        'zu.',
+        'geschlossen.',
+    ]
     state = _is_open()
     if state is True:
-        bot.say(target, 'shack is open')
+        bot.say(target, random.choice(open_choices))
     elif state is False:
-        bot.say(target, 'shack is closed')
+        bot.say(target, random.choice(closed_choices))
     else:
-        bot.say(target, 'Defuq? I have no idea.')
+        bot.say(target, random.choice(defuq_choices))
 
 
 @bot_command('plenum')
