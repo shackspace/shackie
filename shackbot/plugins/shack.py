@@ -1,4 +1,6 @@
+import aiohttp
 import asyncio
+import async_timeout
 from datetime import date, datetime
 from dateutil import parser
 import json
@@ -19,7 +21,7 @@ bot = Bot()
 def _is_open():
     try:
         # response = requests.get('https://api.shack.space/v1/space')
-        response = requests.get('http://localhost/v1/space', timeout=5)
+        response = requests.get('http://api.shackspace.de/v1/space', timeout=5)
         return json.loads(response.content.decode())['doorState']['open']
     except:
         return None
@@ -126,41 +128,53 @@ def check_site():
     asyncio.get_event_loop().call_later(60, check_site)
 
 
-def check_blog():
+async def check_blog():
     blog_key = 'shack.blogpost'
-    response = requests.get('http://blog.shackspace.de/?feed=rss2', timeout=15)
-    soup = bs4.BeautifulSoup(response.text, 'lxml-xml')
-    latest_post = soup.rss.find('item')
-    last_post = store.get(blog_key)
-    last_post = last_post.decode() if last_post else ''
-    store.set(blog_key, latest_post.link.text)
+    while True:
+        await asyncio.sleep(60)
+        try:
+            async with aiohttp.ClientSession() as session:
+                with async_timeout.timeout(30):
+                    async with session.get('http://blog.shackspace.de/?feed=rss2') as resp:
+                        soup = bs4.BeautifulSoup(await resp.text(), 'lxml-xml')
+                        latest_post = soup.rss.find('item')
+                        last_post = store.get(blog_key)
+                        last_post = last_post.decode() if last_post else ''
+                        store.set(blog_key, latest_post.link.text)
+                        if last_post != latest_post.link.text:
+                            bot.say('#shackspace', 'New blog post! »{title}« by {author}: {url}'.format(
+                                title=latest_post.title.text,
+                                author=latest_post.find('creator').text,
+                                url=latest_post.link.text,
+                            ))
+        except (asyncio.CancelledError, asyncio.TimeoutError):
+            print('timeout')
 
-    if last_post != latest_post.link.text:
-        bot.say('#shackspace', 'New blog post! »{title}« by {author}: {url}'.format(
-            title=latest_post.title.text,
-            author=latest_post.find('creator').text,
-            url=latest_post.link.text,
-        ))
-    asyncio.get_event_loop().call_later(60, check_blog)
 
-
-def check_wiki():
+async def check_wiki():
     wiki_key = 'shack.wikichange'
-    feed = feedparser.parse('http://wiki.shackspace.de/feed.php')
-    latest_change = feed.entries[0]
+    while True:
+        await asyncio.sleep(60)
+        try:
+            async with aiohttp.ClientSession() as session:
+                with async_timeout.timeout(30):
+                    async with session.get('http://wiki.shackspace.de/feed.php') as resp:
+                        feed = feedparser.parse(await resp.text())
+                        latest_change = feed.entries[0]
 
-    last_change = store.get(wiki_key)
-    last_change = last_change.decode() if last_change else ''
-    store.set(wiki_key, latest_change['id'])
+                        last_change = store.get(wiki_key)
+                        last_change = last_change.decode() if last_change else ''
+                        store.set(wiki_key, latest_change['id'])
 
-    if last_change != latest_change['id']:
-        response = 'Page changed: ' + latest_change['title']
-        response += ' by ' + latest_change['authors'][0]['name'] if latest_change.get('authors') else ''
-        response += ' – ' + latest_change['links'][0]['href']
-        bot.say('#shackspace', response)
-    asyncio.get_event_loop().call_later(60, check_wiki)
+                        if last_change != latest_change['id']:
+                            response = 'Page changed: ' + latest_change['title']
+                            response += ' by ' + latest_change['authors'][0]['name'] if latest_change.get('authors') else ''
+                            response += ' – ' + latest_change['links'][0]['href']
+                            bot.say('#shackspace', response)
+        except (asyncio.CancelledError, asyncio.TimeoutError):
+            print('timeout')
 
 
 asyncio.get_event_loop().call_later(60, check_site)
-asyncio.get_event_loop().call_later(60, check_blog)
-asyncio.get_event_loop().call_later(60, check_wiki)
+asyncio.ensure_future(check_blog())
+asyncio.ensure_future(check_wiki())
