@@ -1,5 +1,6 @@
 import glob
 import importlib
+from inspect import iscoroutinefunction
 
 import asyncio
 
@@ -20,7 +21,11 @@ if __name__ == '__main__':
         if command:
             if command in REGISTRY:
                 try:
-                    REGISTRY[command](parsed, user, target, text)
+                    handler = REGISTRY[command]
+                    if (iscoroutinefunction(handler)):
+                        asyncio.ensure_future(handler(parsed, user, target, text))
+                    else:
+                        handler(parsed, user, target, text)
                 except Exception as e:
                     print('Calling "{command} failed. Exception: {e}"'.format(command=command, e=str(e)))
             elif config.SAY_NO:
