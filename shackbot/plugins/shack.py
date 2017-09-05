@@ -18,17 +18,18 @@ from storage import store
 bot = Bot()
 
 
-def _is_open():
+async def _is_open():
     try:
-        # response = requests.get('https://api.shack.space/v1/space')
-        response = requests.get('http://api.shackspace.de/v1/space', timeout=5)
-        return json.loads(response.content.decode())['doorState']['open']
+        async with aiohttp.ClientSession(raise_for_status=True) as session:
+            with async_timeout.timeout(5):
+                async with session.get('http://api.shackspace.de/v1/space') as resp:
+                    return json.loads(await resp.text())['doorState']['open']
     except:
         return None
 
 
 @bot_command('open')
-def open(parsed, user, target, text):
+async def open(parsed, user, target, text):
     defuq_choices = [
         'Defuq? I have no idea.',
         'Can\'t reach the space, it probably burned down ...',
@@ -55,7 +56,7 @@ def open(parsed, user, target, text):
         'zu.',
         'geschlossen.',
     ]
-    state = _is_open()
+    state = await _is_open()
     if state is True:
         bot.say(target, random.choice(open_choices))
     elif state is False:
@@ -65,47 +66,54 @@ def open(parsed, user, target, text):
 
 
 @bot_command('plenum')
-def next_plenum(parsed, user, target, text):
+async def next_plenum(parsed, user, target, text):
     try:
-        response = requests.get('http://localhost/v1/plena/next', timeout=5)
-        response.raise_for_status()
-        next_date = parser.parse(json.loads(response.content.decode())['date'])
-        delta = (next_date.date() - date.today()).days
+        async with aiohttp.ClientSession(raise_for_status=True) as session:
+            with async_timeout.timeout(5):
+                async with session.get('http://api.shackspace.de/v1/plena/next') as resp:
+                    next_date = parser.parse(json.loads(await resp.text())['date'])
+                    delta = (next_date.date() - date.today()).days
 
-        if delta == 0:
-            reply_string = "Heute ist Plenum!"
-        elif delta == 1:
-            reply_string = "Morgen ist Plenum!"
-        else:
-            reply_string = "Das nächste Plenum ist in {delta} Tagen, am {date}.".format(
-                delta=delta, date=next_date.strftime('%d.%m')
-            )
-        bot.say(target, reply_string)
+                    if delta == 0:
+                        reply_string = "Heute ist Plenum!"
+                    elif delta == 1:
+                        reply_string = "Morgen ist Plenum!"
+                    else:
+                        reply_string = "Das nächste Plenum ist in {delta} Tagen, am {date}.".format(
+                            delta=delta, date=next_date.strftime('%d.%m')
+                        )
+                    bot.say(target, reply_string)
+
     except:
         bot.say(target, 'Heute Plenum, morgen Plenum, das sind doch bürgerliche Kategorien.')
 
 
 @bot_command(['plenumlink', 'plenumslink'])
-def link_plenum(parsed, user, target, text):
+async def link_plenum(parsed, user, target, text):
     try:
-        response = requests.get('http://localhost/v1/plena/next', timeout=5)
-        bot.say(target, json.loads(response.content.decode())['url'])
+        async with aiohttp.ClientSession(raise_for_status=True) as session:
+            with async_timeout.timeout(5):
+                async with session.get('http://api.shackspace.de/v1/plena/next') as resp:
+                    bot.say(target, json.loads(await resp.text())['url'])
     except:
         bot.say(target, 'Plenum ist ja eigentlich auch überbewertet.')
 
 
 @bot_command('online')
-def online(parsed, user, target, text):
+async def online(parsed, user, target, text):
     try:
-        response = requests.get('http://localhost/v1/online', timeout=10)
-        bot.say(target, json.loads(response.content.decode())['message'])
+        async with aiohttp.ClientSession(raise_for_status=True) as session:
+            with async_timeout.timeout(5):
+                async with session.get('http://api.shackspace.de/v1/online') as resp:
+                    bot.say(target, json.loads(await resp.text())['message'])
     except:
         bot.say(target, 'rashfael: Das tut schon wieder nicht.')
 
 
-def check_site():
-    try:
-        status = _is_open()
+async def check_site():
+    while True:
+        await asyncio.sleep(60)
+        status = await _is_open()
         if status is True:
             new = 'open'
         elif status is False:
@@ -122,10 +130,6 @@ def check_site():
                 bot.say('#shackspace', 'The shack has been opened.')
             elif 'open' in old and 'closed' in new:
                 bot.say('#shackspace', 'The shack has been closed.')
-    except:
-        pass
-
-    asyncio.get_event_loop().call_later(60, check_site)
 
 
 async def check_blog():
@@ -175,6 +179,6 @@ async def check_wiki():
             print('timeout')
 
 
-asyncio.get_event_loop().call_later(60, check_site)
+asyncio.ensure_future(check_site())
 asyncio.ensure_future(check_blog())
 asyncio.ensure_future(check_wiki())
