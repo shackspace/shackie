@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import glob
 import importlib
 from inspect import iscoroutinefunction
