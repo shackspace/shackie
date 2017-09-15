@@ -3,6 +3,7 @@ CHANNELS = ['#shackspace', ]
 PLUGINS = ['karma', 'quotes', 'remind', 'replace', 'shack', 'status', 'title']
 # or: PLUGINS = '__all__'
 NICKNAME = 'shackonista'
+PASSWORD = None
 SAY_NO = False
 
 REDIS = {
