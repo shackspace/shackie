@@ -75,11 +75,11 @@ async def next_plenum(parsed, user, target, text):
                     delta = (next_date.date() - date.today()).days
 
                     if delta == 0:
-                        reply_string = "Heute ist Plenum!"
+                        reply_string = "Heute um 20 Uhr ist Plenum!"
                     elif delta == 1:
-                        reply_string = "Morgen ist Plenum!"
+                        reply_string = "Morgen um 20 Uhr ist Plenum!"
                     else:
-                        reply_string = "Das nächste Plenum ist in {delta} Tagen, am {date}.".format(
+                        reply_string = "Das nächste Plenum ist in {delta} Tagen, am {date}, um 20 Uhr.".format(
                             delta=delta, date=next_date.strftime('%d.%m')
                         )
                     bot.say(target, reply_string)
