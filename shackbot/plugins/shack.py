@@ -175,7 +175,7 @@ async def check_wiki():
                         last_change = last_change.decode() if last_change else ''
                         store.set(wiki_key, latest_change['id'])
 
-                        if last_change != latest_change['id'] and if is_valid_change(latest_change):
+                        if last_change != latest_change['id'] and is_valid_change(latest_change):
                             response = 'Page changed: ' + latest_change['title']
                             response += ' by ' + latest_change['authors'][0]['name'] if latest_change.get('authors') else ''
                             response += ' – ' + latest_change['links'][0]['href']
