@@ -155,6 +155,11 @@ async def check_blog():
             print('timeout')
 
 
+def is_valid_change(latest_change):
+    forbidden_values = ['spielwiese', 'friedhof']
+    return not any([value in latest_change['title'] for value in forbidden_values])
+
+
 async def check_wiki():
     wiki_key = 'shack.wikichange'
     while True:
@@ -170,7 +175,7 @@ async def check_wiki():
                         last_change = last_change.decode() if last_change else ''
                         store.set(wiki_key, latest_change['id'])
 
-                        if last_change != latest_change['id']:
+                        if last_change != latest_change['id'] and if is_valid_change(latest_change):
                             response = 'Page changed: ' + latest_change['title']
                             response += ' by ' + latest_change['authors'][0]['name'] if latest_change.get('authors') else ''
                             response += ' – ' + latest_change['links'][0]['href']
