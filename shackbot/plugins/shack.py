@@ -157,7 +157,9 @@ async def check_blog():
 
 def is_valid_change(latest_change):
     forbidden_values = ['spielwiese', 'friedhof']
-    return not any([value in latest_change['title'] for value in forbidden_values])
+    in_name = any([value in latest_change['title'] for value in forbidden_values])
+    in_url = any([value in latest_change['links'][0]['href'] for value in forbidden_values])
+    return not in_name and not in_url
 
 
 async def check_wiki():
