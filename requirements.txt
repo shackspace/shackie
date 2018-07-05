@@ -1,5 +1,5 @@
 aiohttp
-asyncio-irc
+-e git+https://github.com/watchtower/asyncirc.git#egg=asyncio-irc
 beautifulsoup4
 feedparser
 lxml
