@@ -9,6 +9,6 @@ class Bot:
     def __new__(cls, *args, **kwargs):
         if not cls.bot:
             cls.bot = irc.connect("chat.freenode.net", 6667, use_ssl=False)\
-                .register(config.NICKNAME, config.NICKNAME, '{} (bot)'.format(config.NICKNAME))\
+                .register(config.NICKNAME, config.NICKNAME, '{} (bot)'.format(config.NICKNAME),  password=config.PASSWORD)\
                 .join(config.CHANNELS)
         return cls.bot
