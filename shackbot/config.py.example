@@ -4,7 +4,7 @@ PLUGINS = ['karma', 'quotes', 'remind', 'replace', 'shack', 'status', 'title']
 # or: PLUGINS = '__all__'
 NICKNAME = 'shackonista'
 SAY_NO = False
-
+IGNORE = [ 'shack_announce' ]
 REDIS = {
     'HOST': 'redis',
     'PORT': 6379,
