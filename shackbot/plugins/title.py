@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from bot import Bot
 from storage import store
 
+from config import IGNORE
 
 bot = Bot()
 
@@ -48,6 +49,7 @@ def _handle_repeat(url, bot, target):
 
 @bot.on('message')
 def title(parsed, user, target, text):
+    if user.nick in IGNORE : return
     if 'http://' in text or 'https://' in text:
         url = text[text.find('http'):].split()[0]
         _handle_title(url, bot, target)
