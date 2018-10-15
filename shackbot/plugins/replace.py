@@ -5,6 +5,7 @@ import re
 from subprocess import Popen, PIPE
 
 from bot import Bot
+from config import IGNORE
 from storage import store
 
 
@@ -18,6 +19,8 @@ def is_replace(line):
 
 @bot.on('message')
 def replace_entrypoint(parsed, user, target, text):
+    if user.nick in IGNORE:
+        return
     if is_replace(text):
         last_line = store.get('replace.{}.{}'.format(target, user.nick)).decode()
         if last_line:

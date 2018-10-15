@@ -11,6 +11,7 @@ import feedparser
 import requests
 
 from bot import Bot
+from config import IGNORE
 from registry import bot_command
 from storage import store
 
@@ -30,6 +31,8 @@ async def _is_open():
 
 @bot_command('open')
 async def open(parsed, user, target, text):
+    if user.nick in IGNORE:
+        return
     defuq_choices = [
         'Defuq? I have no idea.',
         'Can\'t reach the space, it probably burned down ...',
@@ -67,6 +70,8 @@ async def open(parsed, user, target, text):
 
 @bot_command('plenum')
 async def next_plenum(parsed, user, target, text):
+    if user.nick in IGNORE:
+        return
     try:
         async with aiohttp.ClientSession(raise_for_status=True) as session:
             with async_timeout.timeout(5):
@@ -90,6 +95,8 @@ async def next_plenum(parsed, user, target, text):
 
 @bot_command(['plenumlink', 'plenumslink'])
 async def link_plenum(parsed, user, target, text):
+    if user.nick in IGNORE:
+        return
     try:
         async with aiohttp.ClientSession(raise_for_status=True) as session:
             with async_timeout.timeout(5):
@@ -101,6 +108,8 @@ async def link_plenum(parsed, user, target, text):
 
 @bot_command('online')
 async def online(parsed, user, target, text):
+    if user.nick in IGNORE:
+        return
     try:
         async with aiohttp.ClientSession(raise_for_status=True) as session:
             with async_timeout.timeout(5):

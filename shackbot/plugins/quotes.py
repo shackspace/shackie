@@ -1,6 +1,7 @@
 import random
 
 from bot import Bot
+from config import IGNORE
 from registry import bot_command
 
 
@@ -9,11 +10,15 @@ bot = Bot()
 
 @bot_command('stoll')
 def stoll(parsed, user, target, text):
+    if user.nick in IGNORE:
+        return
     bot.say(target, random.choice(stoll_quotes) + ' -- Dr. Axel Stoll(†)')
 
 
 @bot_command('glados')
 def glados(parsed, user, target, text):
+    if user.nick in IGNORE:
+        return
     bot.say(target, random.choice(glados_quotes) + ' -- GlaDOS')
 
 

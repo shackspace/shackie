@@ -2,6 +2,7 @@ import json
 import operator
 
 from bot import Bot
+from config import IGNORE
 from registry import bot_command
 from storage import store
 
@@ -11,8 +12,10 @@ bot = Bot()
 
 @bot_command('karma')
 def show_karma(parsed, user, target, text):
-    text = text[len('.karma'):].strip().lower()
+    if user.nick in IGNORE:
+        return
 
+    text = text[len('.karma'):].strip().lower()
     if not text:
         try:
             top = json.loads(store.get('karma.top.{}'.format(target)).decode()) or dict()
@@ -57,6 +60,8 @@ def show_karma(parsed, user, target, text):
 
 @bot.on('message')
 def title(parsed, user, target, text):
+    if user.nick in IGNORE:
+        return
     text = text.strip()
     if text.endswith('++') or text.endswith('--'):
         karma = text[:-2]

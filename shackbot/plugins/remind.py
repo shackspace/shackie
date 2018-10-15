@@ -6,11 +6,14 @@ import pytz
 from bot import Bot
 from copy import copy
 from functools import partial
+from config import IGNORE
 from registry import bot_command
 
 
 @bot_command('remind')
 def remind(parsed, user, target, text):
+    if user.nick in IGNORE:
+        return
     bot = Bot()
 
     def startmsg(target, user, seconds, message):

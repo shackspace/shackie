@@ -2,6 +2,7 @@ import random
 
 import config
 from bot import Bot
+from config import IGNORE
 from .comment_data import ANSWERS, PERSONAL_ANSWERS
 
 bot = Bot()
@@ -18,6 +19,8 @@ def _send_answer(answer, target):
 
 @bot.on('message')
 def comment(parsed, user, target, text):
+    if user.nick in IGNORE:
+        return
     message = text
     addressed = False
     if message.startswith(config.NICKNAME + ': ') or message.startswith(config.NICKNAME + ', '):
