@@ -1,5 +1,7 @@
 # shackie - asyncio based irc bot
 
+shackie is primarily used in #shackspace on freenode.
+
 ## run
 
 ``` shell
