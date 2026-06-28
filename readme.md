@@ -1,3 +1,5 @@
+migrated to new location: https://codeberg.org/shackspace/shackie
+
 # shackie - asyncio based irc bot
 
 shackie is primarily used in #shackspace on freenode.
